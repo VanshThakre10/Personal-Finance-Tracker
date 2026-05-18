@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Tracker | Premium Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBase: '#0f172a', // slate-900
+                        darkCard: '#1e293b', // slate-800
+                        neonBlue: '#38bdf8',
+                        neonGreen: '#4ade80',
+                        neonRed: '#f87171'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-darkBase text-gray-100 font-sans antialiased min-h-screen transition-colors duration-300">
+
+    <!-- Header Section (Step 1 & 2) -->
+    <header class="glass-effect sticky top-0 z-50 border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-neonBlue/20 flex items-center justify-center text-neonBlue">
+                        <i class="fa-solid fa-wallet text-xl"></i>
+                    </div>
+                    <h1 class="text-xl font-bold tracking-tight">Finance<span class="text-neonBlue">Tracker</span></h1>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span id="currentDate" class="text-sm text-gray-400 hidden sm:block"></span>
+                    <button id="themeToggle" class="p-2 rounded-lg bg-darkCard hover:bg-gray-700 transition-colors">
+                        <i class="fa-solid fa-moon text-neonBlue"></i>
+                    </button>
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-r from-neonBlue to-neonGreen"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Summary Cards (Step 2) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Budget Card -->
+            <div class="glass-card rounded-2xl p-6 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-neonBlue/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
+                <div class="flex justify-between items-start relative z-10">
+                    <div>
+                        <p class="text-sm font-medium text-gray-400 mb-1">Total Budget</p>
+                        <h2 class="text-3xl font-bold text-white">$<span id="displayBudget">0.00</span></h2>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-neonBlue/20 flex items-center justify-center text-neonBlue">
+                        <i class="fa-solid fa-building-columns text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expenses Card -->
+            <div class="glass-card rounded-2xl p-6 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-neonRed/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
+                <div class="flex justify-between items-start relative z-10">
+                    <div>
+                        <p class="text-sm font-medium text-gray-400 mb-1">Total Expenses</p>
+                        <h2 class="text-3xl font-bold text-white">$<span id="displayExpenses">0.00</span></h2>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-neonRed/20 flex items-center justify-center text-neonRed">
+                        <i class="fa-solid fa-arrow-trend-down text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Remaining Card -->
+            <div class="glass-card rounded-2xl p-6 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-neonGreen/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
+                <div class="flex justify-between items-start relative z-10">
+                    <div>
+                        <p class="text-sm font-medium text-gray-400 mb-1">Remaining Budget</p>
+                        <h2 class="text-3xl font-bold text-white">$<span id="displayRemaining">0.00</span></h2>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-neonGreen/20 flex items-center justify-center text-neonGreen">
+                        <i class="fa-solid fa-piggy-bank text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Left Column: Forms -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Budget Form (Step 5 stub) -->
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-bullseye text-neonBlue"></i> Set Monthly Budget
+                    </h3>
+                    <form id="budgetForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Budget Amount</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">$</span>
+                                <input type="number" id="budgetInput" class="w-full bg-darkBase border border-gray-700 rounded-lg py-2 pl-8 pr-4 text-white focus:outline-none focus:border-neonBlue focus:ring-1 focus:ring-neonBlue transition-colors" placeholder="0.00" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full bg-neonBlue/10 text-neonBlue border border-neonBlue/50 hover:bg-neonBlue hover:text-darkBase font-semibold py-2 px-4 rounded-lg transition-all duration-300">
+                            Update Budget
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Expense Form (Step 3) -->
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-plus text-neonGreen"></i> Add New Expense
+                    </h3>
+                    <form id="expenseForm" class="space-y-4">
+                        <input type="hidden" id="editExpenseId">
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Expense Title</label>
+                            <input type="text" id="expenseTitle" class="w-full bg-darkBase border border-gray-700 rounded-lg py-2 px-4 text-white focus:outline-none focus:border-neonGreen focus:ring-1 focus:ring-neonGreen transition-colors" placeholder="e.g. Groceries" required>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Amount</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">$</span>
+                                <input type="number" id="expenseAmount" class="w-full bg-darkBase border border-gray-700 rounded-lg py-2 pl-8 pr-4 text-white focus:outline-none focus:border-neonGreen focus:ring-1 focus:ring-neonGreen transition-colors" placeholder="0.00" required>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Category</label>
+                            <select id="expenseCategory" class="w-full bg-darkBase border border-gray-700 rounded-lg py-2 px-4 text-white focus:outline-none focus:border-neonGreen focus:ring-1 focus:ring-neonGreen transition-colors" required>
+                                <option value="" disabled selected>Select category</option>
+                                <option value="Food">Food & Dining</option>
+                                <option value="Travel">Travel</option>
+                                <option value="Shopping">Shopping</option>
+                                <option value="Bills">Bills & Utilities</option>
+                                <option value="Entertainment">Entertainment</option>
+                                <option value="Health">Health & Fitness</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Date</label>
+                            <input type="date" id="expenseDate" class="w-full bg-darkBase border border-gray-700 rounded-lg py-2 px-4 text-white focus:outline-none focus:border-neonGreen focus:ring-1 focus:ring-neonGreen transition-colors" required>
+                        </div>
+
+                        <button type="submit" id="submitExpenseBtn" class="w-full bg-neonGreen/10 text-neonGreen border border-neonGreen/50 hover:bg-neonGreen hover:text-darkBase font-semibold py-2 px-4 rounded-lg transition-all duration-300">
+                            Add Expense
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Chart Container (Step 9) -->
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-neonGreen"></i> Expenses by Category
+                    </h3>
+                    <div class="relative h-64 w-full flex items-center justify-center">
+                        <canvas id="expenseChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Expense List (Step 4 Logic) -->
+            <div class="lg:col-span-2">
+                <div class="glass-card rounded-2xl p-6 h-full flex flex-col">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                        <h3 class="text-lg font-semibold flex items-center gap-2">
+                            <i class="fa-solid fa-list text-neonBlue"></i> Recent Expenses
+                        </h3>
+                        <div class="flex gap-2 w-full md:w-auto">
+                            <div class="relative w-full md:w-48">
+                                <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
+                                <input type="text" id="searchInput" class="w-full bg-darkBase border border-gray-700 rounded-lg py-1.5 pl-9 pr-3 text-sm text-white focus:outline-none focus:border-neonBlue transition-colors" placeholder="Search...">
+                            </div>
+                            <select id="filterCategory" class="w-full md:w-36 bg-darkBase border border-gray-700 rounded-lg py-1.5 px-3 text-sm text-white focus:outline-none focus:border-neonBlue transition-colors cursor-pointer">
+                                <option value="All">All Categories</option>
+                                <option value="Food">Food & Dining</option>
+                                <option value="Travel">Travel</option>
+                                <option value="Shopping">Shopping</option>
+                                <option value="Bills">Bills & Utilities</option>
+                                <option value="Entertainment">Entertainment</option>
+                                <option value="Health">Health & Fitness</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Expense List Container -->
+                    <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-3 max-h-[600px]" id="expenseList">
+                        <!-- Empty State -->
+                        <div class="text-center text-gray-500 py-10" id="emptyState">
+                            <i class="fa-solid fa-receipt text-4xl mb-3 opacity-50"></i>
+                            <p>No expenses added yet.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/storage.js"></script>
+    <script src="js/chart.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
