@@ -46,9 +46,6 @@
                 </div>
                 <div class="flex items-center gap-4">
                     <span id="currentDate" class="text-sm text-gray-400 hidden sm:block"></span>
-                    <button id="themeToggle" class="p-2 rounded-lg bg-darkCard hover:bg-gray-700 transition-colors">
-                        <i class="fa-solid fa-moon text-neonBlue"></i>
-                    </button>
                     <div class="w-8 h-8 rounded-full bg-gradient-to-r from-neonBlue to-neonGreen"></div>
                 </div>
             </div>
@@ -107,7 +104,7 @@
             
             <!-- Left Column: Forms -->
             <div class="lg:col-span-1 space-y-6">
-                <!-- Budget Form (Will be fully integrated in Step 5, but adding UI now) -->
+                <!-- Budget Form (Step 5 stub) -->
                 <div class="glass-card rounded-2xl p-6">
                     <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
                         <i class="fa-solid fa-bullseye text-neonBlue"></i> Set Monthly Budget
@@ -171,20 +168,21 @@
                         </button>
                     </form>
                 </div>
+
             </div>
 
             <!-- Right Column: Expense List (Step 4 Logic) -->
             <div class="lg:col-span-2">
                 <div class="glass-card rounded-2xl p-6 h-full flex flex-col">
-                    <div class="flex justify-between items-center mb-6">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                         <h3 class="text-lg font-semibold flex items-center gap-2">
                             <i class="fa-solid fa-list text-neonBlue"></i> Recent Expenses
                         </h3>
                     </div>
 
                     <!-- Expense List Container -->
-                    <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-3" id="expenseList">
-                        <!-- Expenses injected via JS -->
+                    <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-3 max-h-[600px]" id="expenseList">
+                        <!-- Empty State -->
                         <div class="text-center text-gray-500 py-10" id="emptyState">
                             <i class="fa-solid fa-receipt text-4xl mb-3 opacity-50"></i>
                             <p>No expenses added yet.</p>
