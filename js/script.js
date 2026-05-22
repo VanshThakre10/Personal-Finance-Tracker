@@ -21,6 +21,11 @@ const displayBudget = document.getElementById('displayBudget');
 const displayExpenses = document.getElementById('displayExpenses');
 const displayRemaining = document.getElementById('displayRemaining');
 
+const searchInput = document.getElementById('searchInput');
+const filterCategory = document.getElementById('filterCategory');
+const themeToggleBtn = document.getElementById('themeToggleBtn');
+const themeIcon = document.getElementById('themeIcon');
+
 
 // Initialize App
 function init() {
@@ -33,6 +38,7 @@ function init() {
     const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', dateOptions);
 
+    applyTheme(currentTheme);
     renderExpenses();
     updateSummary();
 }
@@ -189,13 +195,22 @@ function editExpense(id) {
 function renderExpenses() {
     expenseList.innerHTML = '';
 
-    if (expenses.length === 0) {
+    const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+    const filterCat = filterCategory ? filterCategory.value : 'All';
+
+    const filteredExpenses = expenses.filter(exp => {
+        const matchesSearch = exp.title.toLowerCase().includes(searchTerm);
+        const matchesCategory = filterCat === 'All' || exp.category === filterCat;
+        return matchesSearch && matchesCategory;
+    });
+
+    if (filteredExpenses.length === 0) {
         expenseList.appendChild(emptyState);
         emptyState.classList.remove('hidden');
     } else {
         emptyState.classList.add('hidden');
         
-        expenses.forEach(expense => {
+        filteredExpenses.forEach(expense => {
             const style = getCategoryStyle(expense.category);
             
             const expenseEl = document.createElement('div');
@@ -231,11 +246,48 @@ function renderExpenses() {
         });
     }
 
+    if (typeof updateChart === 'function') {
+        updateChart(filteredExpenses);
+    }
 }
 
 // Event Listeners
 expenseForm.addEventListener('submit', handleExpenseSubmit);
 budgetForm.addEventListener('submit', handleBudgetSubmit);
+
+if (searchInput) searchInput.addEventListener('input', renderExpenses);
+if (filterCategory) filterCategory.addEventListener('change', renderExpenses);
+
+// Theme Logic
+function applyTheme(theme) {
+    if (theme === 'light') {
+        document.body.classList.add('light-mode');
+        document.documentElement.classList.remove('dark');
+        if (themeIcon) {
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+            themeIcon.classList.replace('text-yellow-400', 'text-orange-500');
+        }
+    } else {
+        document.body.classList.remove('light-mode');
+        document.documentElement.classList.add('dark');
+        if (themeIcon) {
+            themeIcon.classList.replace('fa-sun', 'fa-moon');
+            themeIcon.classList.replace('text-orange-500', 'text-yellow-400');
+        }
+    }
+    
+    updateSummary();
+    renderExpenses();
+}
+
+if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', () => {
+        currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+        Storage.saveTheme(currentTheme);
+        applyTheme(currentTheme);
+    });
+}
+
 
 
 // Run init
